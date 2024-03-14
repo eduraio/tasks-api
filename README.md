@@ -1,73 +1,435 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
+ <img src="https://i.imgur.com/BufvB30.png" width="200" alt="Zenvia Logo" />
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+<h1 align="center">Zenvia | Tasks API</h1>
 
 ## Description
+Tasks API is a project made to Zenvia Home Test.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+**Technologies**
+- Nest.js
+- Prisma (With PostgresSQL)
+- Docker
+
+**Requirements**
+- Task name must be unique
+- Only allowed users can create tasks
 
 ## Installation
+> 1 - Clone the repository
+```bash
+git clone https://github.com/eduraio/tasks-api.git
+```
+> 2 - Install Dependecies
+```bash
+yarn install
+```
+> 3 - Populate .env file based on .env.example
+```env
+DATABASE_URL=postgresql://zenvia_user:zenvia_password@localhost:5432/zenvia_database?schema=public"
+JWT_SECRET=
+```
+*Postgres User, Password and Database available on docker-compose.yml*
+
+*Generate a JWT Secret, you can run the following script to generate yours:*
 
 ```bash
-$ yarn install
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
-
-## Running the app
-
+> 4 - Run docker-compose
 ```bash
-# development
-$ yarn run start
-
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+docker-compose up
 ```
-
-## Test
-
+> 5 - Run Prisma Migrations
 ```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
+yarn prisma migrate dev
+```
+> 6 - Run Prisma Seed
+```bash
+yarn prisma db seed
 ```
 
-## Support
+## Usage
+To start the project use:
+```bash
+yarn start
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+To access the API Documentation
+```
+http://localhost:3000/docs
+```
 
-## Stay in touch
+Note that all routes, except login, are protected.
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Use admin credentials to login and get the AccessToken. *This user is created running Prisma Seed. Check Installation Step 6*
+```
+e-mail: admin@email.com
+password: admin
+```
 
-## License
+*AccessTokens are valid for 10 minutes*
 
-Nest is [MIT licensed](LICENSE).
+You will need the AccessToken to authenticate on other routes
+
+# Routes
+Here goes all the routes.
+You can also check [Docs](http://localhost:3000/docs) for full details.
+
+`🔒` **All routes, except login, must have an `Authorization` header containing the accessToken** 
+
+```json
+{
+  "Authorization": "Bearer {accessToken}"
+}
+```
+
+## Login 
+
+`🟢 POST` `/auth/login`
+
+Request Body
+```json
+{
+  "email": "string",
+  "password": "string"
+}
+```
+
+Response `Application/json`
+
+```json
+{
+  "accessToken": "string"
+}
+```
+
+----
+
+## `🔒` Users 
+
+| Parameter | Description |
+|---|---|
+| `id` | User UUID |
+| `email` `UNIQUE` | User e-mail |
+| `password` | User password |
+| `permissions` | Array of permissions. All permissions: `READ_USERS` `CREATE_USERS` `UPDATE_USERS` `DELETE_USERS` `READ_TASKS` `CREATE_TASKS` `UPDATE_TASKS` `DELETE_TASKS` |
+| `tasks?` | Array of tasks created by this user|
+| `created_at` | Date of creation |
+| `updated_at` | Last updated date |
+
+
+`🔵 GET` `/users`
+
+Request Body
+```json
+{}
+```
+
+Response `Application/json`
+
+```json
+{
+  [
+    {
+      "id": "string",
+      "email": "string",
+      "password": "string", (omitted)
+      "permissions": [
+        "READ_USERS",
+        "CREATE_USERS",
+        "UPDATE_USERS",
+        "DELETE_USERS",
+        "READ_TASKS",
+        "CREATE_TASKS",
+        "UPDATE_TASKS",
+        "DELETE_TASKS"
+      ],
+      "tasks": [],
+      "created_at": "date",
+      "updated_at": "date"
+    }
+  ]
+}
+```
+
+`🔵 GET` `/users/{id}`
+
+Request Body
+```json
+  {}
+```
+
+Response `Application/json`
+
+```json
+[
+  {
+    "id": "string",
+    "email": "string",
+    "password": "string", (omitted)
+    "permissions": [
+      "READ_USERS",
+      "CREATE_USERS",
+      "UPDATE_USERS",
+      "DELETE_USERS",
+      "READ_TASKS",
+      "CREATE_TASKS",
+      "UPDATE_TASKS",
+      "DELETE_TASKS"
+    ],
+    "tasks": [],
+    "created_at": "date",
+    "updated_at": "date"
+  }
+]
+```
+
+`🟢 POST` `/users`
+
+Request Body
+```json
+{
+  "email": "string",
+  "password": "string", (omitted)
+  "permissions": [
+    "READ_USERS",
+    "CREATE_USERS",
+    "UPDATE_USERS",
+    "DELETE_USERS",
+    "READ_TASKS",
+    "CREATE_TASKS",
+    "UPDATE_TASKS",
+    "DELETE_TASKS"
+  ]
+}
+```
+
+Response `Application/json`
+
+```json
+{
+  "id": "string",
+  "email": "string",
+  "password": "string", (omitted)
+  "permissions": [
+    "READ_USERS",
+    "CREATE_USERS",
+    "UPDATE_USERS",
+    "DELETE_USERS",
+    "READ_TASKS",
+    "CREATE_TASKS",
+    "UPDATE_TASKS",
+    "DELETE_TASKS"
+  ],
+  "tasks": [],
+  "created_at": "date",
+  "updated_at": "date"
+}
+```
+
+`🟣 PATCH` `/users/{id}`
+
+Request Body
+```json
+{
+  "email": "string",
+  "password": "string", (omitted)
+  "permissions": [
+    "READ_USERS",
+    "CREATE_USERS",
+    "UPDATE_USERS",
+    "DELETE_USERS",
+    "READ_TASKS",
+    "CREATE_TASKS",
+    "UPDATE_TASKS",
+    "DELETE_TASKS"
+  ]
+}
+```
+
+Response `Application/json`
+
+```json
+{
+  "id": "string",
+  "email": "string",
+  "password": "string", (omitted)
+  "permissions": [
+    "READ_USERS",
+    "CREATE_USERS",
+    "UPDATE_USERS",
+    "DELETE_USERS",
+    "READ_TASKS",
+    "CREATE_TASKS",
+    "UPDATE_TASKS",
+    "DELETE_TASKS"
+  ],
+  "tasks": [],
+  "created_at": "date",
+  "updated_at": "date"
+}
+```
+
+`🔴 DELETE` `/users/{id}`
+
+Request Body
+```json
+{}
+```
+
+Response `Application/json`
+
+```json
+{
+  "id": "string",
+  "email": "string",
+  "password": "string", (omitted)
+  "permissions": [
+    "READ_USERS",
+    "CREATE_USERS",
+    "UPDATE_USERS",
+    "DELETE_USERS",
+    "READ_TASKS",
+    "CREATE_TASKS",
+    "UPDATE_TASKS",
+    "DELETE_TASKS"
+  ],
+  "tasks": [],
+  "created_at": "date",
+  "updated_at": "date"
+}
+```
+
+----
+
+## `🔒` Tasks
+
+| Parameter | Description |
+|---|---|
+| `id` | Task UUID |
+| `name` `UNIQUE` | Task name |
+| `description` | Task description |
+| `created_by_user_id?` | Id of the user who created the task. If the user is deleted, field set to null. *Note: Automatically populated based on logged in user* |
+| `created_by_user?` | User who created the task |
+| `created_at` | Date of creation |
+| `updated_at` | Last updated date |
+
+
+`🔵 GET` `/tasks`
+
+Request Body
+```json
+{}
+```
+
+Response `Application/json`
+
+```json
+{
+  [
+    {
+      "id": "string",
+      "name": "string",
+      "description": "string",
+      "created_by_user_id": "string",
+      "created_by_user": "User",
+      "created_at": "date",
+      "updated_at": "date"
+    }
+  ]
+}
+```
+
+`🔵 GET` `/tasks/{id}`
+
+Request Body
+```json
+  {}
+```
+
+Response `Application/json`
+
+```json
+[
+  {
+    "id": "string",
+    "name": "string",
+    "description": "string",
+    "created_by_user_id": "string",
+    "created_by_user": "User",
+    "created_at": "date",
+    "updated_at": "date"
+  }
+]
+```
+
+`🟢 POST` `/tasks`
+
+Request Body
+```json
+{
+  "name": "string",
+  "description": "string",
+}
+```
+
+Response `Application/json`
+
+```json
+{
+  "id": "string",
+  "name": "string",
+  "description": "string",
+  "created_by_user_id": "string",
+  "created_by_user": "User",
+  "created_at": "date",
+  "updated_at": "date"
+}
+```
+
+`🟣 PATCH` `/tasks/{id}`
+
+Request Body
+```json
+{
+  "name": "string",
+  "description": "string",
+}
+```
+
+Response `Application/json`
+
+```json
+{
+  "id": "string",
+  "name": "string",
+  "description": "string",
+  "created_by_user_id": "string",
+  "created_by_user": "User",
+  "created_at": "date",
+  "updated_at": "date"
+}
+```
+
+`🔴 DELETE` `/tasks/{id}`
+
+Request Body
+```json
+{}
+```
+
+Response `Application/json`
+
+```json
+{
+  "id": "string",
+  "name": "string",
+  "description": "string",
+  "created_by_user_id": "string",
+  "created_by_user": "User",
+  "created_at": "date",
+  "updated_at": "date"
+}
+```

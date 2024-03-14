@@ -14,7 +14,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Zenvia - Tasks API')
     .setDescription(
-      'API made to Zenvia Home Test\n<hr></hr>\nAll routes, except by login, are authenticated',
+      'API made to Zenvia Home Test\n<hr></hr>\nAll routes, except by login, are protected',
     )
     .setVersion('1.0')
     .addBearerAuth()
