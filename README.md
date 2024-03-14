@@ -27,7 +27,7 @@ yarn install
 ```
 > 3 - Populate .env file based on .env.example
 ```env
-DATABASE_URL=postgresql://zenvia_user:zenvia_password@localhost:5432/zenvia_database?schema=public"
+DATABASE_URL="postgresql://zenvia_user:zenvia_password@localhost:5432/zenvia_database?schema=public"
 JWT_SECRET=
 ```
 *Postgres User, Password and Database available on docker-compose.yml*
