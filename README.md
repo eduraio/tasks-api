@@ -77,7 +77,7 @@ You will need the AccessToken to authenticate on other routes
 Here goes all the routes.
 You can also check [Docs](http://localhost:3000/docs) for full details.
 
-Included with the files, has an [Insomina Workspace](https://github.com/eduraio/tasks-api/blob/master/tasks-api-insominia.json) with all routes as well. Just import it inside Insomnia.
+Included with the files, has an [Insomina Workspace](https://github.com/eduraio/tasks-api/blob/master/tasks-api-insomnia.json) with all routes as well. Just import it inside Insomnia.
 
 `🔒` **All routes, except login, must have an `Authorization` header containing the accessToken** 
 
