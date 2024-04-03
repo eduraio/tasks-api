@@ -1,18 +1,14 @@
-<p align="center">
- <img src="https://i.imgur.com/BufvB30.png" width="200" alt="Zenvia Logo" />
-</p>
-
-<h1 align="center">Zenvia | Tasks API</h1>
+<h1 align="center">Tasks API</h1>
 
 ## Description
-Tasks API is a project made to Zenvia Home Test.
+Tasks API is a simples project to create tasks with users permissions.
 
 **Technologies**
 - Nest.js
 - Prisma (With PostgresSQL)
 - Docker
 
-**Requirements**
+**My Requirements**
 - Task name must be unique
 - Only allowed users can create tasks
 
@@ -27,7 +23,7 @@ yarn install
 ```
 > 3 - Populate .env file based on .env.example
 ```env
-DATABASE_URL="postgresql://zenvia_user:zenvia_password@localhost:5432/zenvia_database?schema=public"
+DATABASE_URL="postgresql://user:password@localhost:5432/database?schema=public"
 JWT_SECRET=
 ```
 *Postgres User, Password and Database available on docker-compose.yml*
@@ -194,7 +190,7 @@ Request Body
 ```json
 {
   "email": "string",
-  "password": "string", (omitted)
+  "password": "string",
   "permissions": [
     "READ_USERS",
     "CREATE_USERS",
@@ -237,7 +233,7 @@ Request Body
 ```json
 {
   "email": "string",
-  "password": "string", (omitted)
+  "password": "string",
   "permissions": [
     "READ_USERS",
     "CREATE_USERS",
