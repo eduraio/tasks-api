@@ -8,9 +8,9 @@ services:
         source: pgdata
         target: /var/lib/postgresql/data
     environment:
-      POSTGRES_USER: zenvia_user
-      POSTGRES_PASSWORD: zenvia_password
-      POSTGRES_DB: zenvia_database
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: database
     ports:
       - 5432:5432
 volumes:
