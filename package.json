@@ -1,7 +1,7 @@
 {
-  "name": "zenvia-project",
+  "name": "tasks-api-project",
   "version": "0.0.1",
-  "description": "Tasks API. Made to Zenvia Home Test",
+  "description": "Tasks API",
   "author": "Eduardo Rodrigues",
   "private": true,
   "license": "UNLICENSED",
